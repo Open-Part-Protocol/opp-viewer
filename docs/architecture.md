@@ -8,7 +8,7 @@ The viewer is a native Rust executable using `eframe`/`egui` for the interface a
 
 The seven draft JSON schemas are embedded at compilation. A custom schema retriever resolves their fixed URNs from memory. Network and filesystem schema retrieval are disabled. Every inventoried resource is checked against its size and SHA-256; the design snapshot and resource pins are checked independently of the transport inventory.
 
-The product graph is expanded into occurrence paths with accumulated rigid transforms in millimetres. A repeated component retains its full path, so two instances of the same definition cannot share measurements merely because they share a part number. Actual evaluations and observations are selected by physical subject ID as well as requirement ID.
+The product graph is expanded into occurrence paths with accumulated rigid transforms in millimetres. A repeated component retains its full path, so two instances of the same definition cannot share measurements merely because they share a part number. Actual evaluations and observations are selected by physical subject ID as well as requirement ID. The latest evaluation is shown together with its own associated observation; full history remains in the source document.
 
 Structural checks also cover selected references, serial identities, observation/run dates, referenced calibration validity, simple decimal limit comparisons, and the scope/effectivity of an accepted deviation. These are a useful subset of the draft invariants, not a complete conformance implementation. Unknown required extension semantics remain visible as warnings, and raw JSON remains available.
 
@@ -16,7 +16,7 @@ Structural checks also cover selected references, serial identities, observation
 
 `src/geometry.rs` reads supported STEP shells through `truck-stepio`, triangulates through `truck-meshalgo`, and applies OPP occurrence transforms. The adapter checks explicit units and face conversion completeness before publishing a preview. A geometry error does not invalidate otherwise reviewable metadata.
 
-`src/viewport.rs` projects actual tessellated triangles into an interactive orthographic view. Faces are depth sorted, shaded, and drawn with egui's native renderer. This initial renderer has no dedicated 3D depth buffer or full hidden-line calculation. It is intended for limited review geometry; a dedicated rendering pipeline is a future improvement.
+`src/viewport.rs` projects actual tessellated triangles into an interactive orthographic view. Faces are depth sorted, shaded, and drawn with egui's native renderer. Edge strokes are drawn before filled faces to avoid displaying hidden edges through the solid. This initial renderer has no dedicated 3D depth buffer or full hidden-line calculation. It is intended for limited review geometry; a dedicated rendering pipeline is a future improvement.
 
 Registered ASCII PLY points are converted from their stated unit and transformed through the selected subject's full occurrence path. Unregistered scans, unsupported coordinate frame chains, and unsupported data encodings remain inspectable as evidence but have no overlay.
 

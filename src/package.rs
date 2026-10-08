@@ -884,6 +884,32 @@ impl Package {
         Ok(())
     }
 
+    /// Review the most recent recorded evaluation for one characteristic and physical subject.
+    pub fn latest_evaluation(&self, requirement: &str, subject: &str) -> Option<&Value> {
+        let actual = self.actual.as_ref()?;
+        array(actual, "evaluations")
+            .iter()
+            .filter(|e| text(e, "requirementId") == requirement && text(e, "subjectId") == subject)
+            .max_by_key(|e| DateTime::parse_from_rfc3339(text(e, "evaluatedAt")).ok())
+    }
+    /// Keep the displayed measurement tied to the displayed evaluation, rather than an older retest.
+    pub fn review_observation(&self, requirement: &str, subject: &str) -> Option<&Value> {
+        let actual = self.actual.as_ref()?;
+        let evaluation = self.latest_evaluation(requirement, subject);
+        array(actual, "observations")
+            .iter()
+            .filter(|o| {
+                text(o, "requirementId") == requirement
+                    && text(o, "subjectId") == subject
+                    && evaluation.is_none_or(|e| {
+                        array(e, "observationIds")
+                            .iter()
+                            .any(|id| id.as_str() == Some(text(o, "id")))
+                    })
+            })
+            .max_by_key(|o| DateTime::parse_from_rfc3339(text(o, "observedAt")).ok())
+    }
+
     pub fn resource(&self, id: &str) -> Result<(&Resource, &[u8])> {
         let resource = self.resources.get(id).context("Resource not found")?;
         Ok((resource, &self.files[&resource.path]))

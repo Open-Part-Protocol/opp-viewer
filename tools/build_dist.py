@@ -30,9 +30,11 @@ def main():
             plistlib.dump({"CFBundleExecutable": "opp-viewer", "CFBundleIdentifier": "org.openpartprotocol.viewer", "CFBundleName": "OPP Viewer", "CFBundleDisplayName": "OPP Viewer", "CFBundlePackageType": "APPL", "CFBundleVersion": "0.1.0", "CFBundleShortVersionString": "0.1.0", "NSHighResolutionCapable": True, "LSMinimumSystemVersion": "12.0"}, handle)
     else:
         shutil.copy2(source, destination / executable)
-    for name in ["LICENSE", "README.md", "THIRD_PARTY_NOTICES.md"]:
+    for name in ["LICENSE", "README.md", "THIRD_PARTY_NOTICES.md", "CONTRIBUTING.md"]:
         shutil.copy2(ROOT / name, destination / name)
     shutil.copytree(ROOT / "fixtures", destination / "examples", dirs_exist_ok=True)
+    shutil.copytree(ROOT / "docs", destination / "docs", dirs_exist_ok=True)
+    shutil.copytree(ROOT / "protocol", destination / "protocol", dirs_exist_ok=True)
     metadata = json.loads(subprocess.check_output(["cargo", "metadata", "--locked", "--offline", "--format-version", "1", "--filter-platform", target], cwd=ROOT, text=True))
     notices = destination / "dependency-licenses"
     notices.mkdir(exist_ok=True)
@@ -56,7 +58,7 @@ def main():
                 shutil.copy2(path, output)
     (notices / "inventory.json").write_text(json.dumps(declarations, indent=2) + "\n", encoding="utf-8")
     output = destination.parent / f"{destination.name}.zip"
-    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED) as archive:
+    with zipfile.ZipFile(output, "w", zipfile.ZIP_DEFLATED, strict_timestamps=False) as archive:
         for path in sorted(destination.rglob("*")):
             if path.is_file():
                 archive.write(path, path.relative_to(destination.parent))

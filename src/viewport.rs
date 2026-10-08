@@ -8,6 +8,7 @@ pub struct Camera {
     zoom: f64,
     pan: Vec2,
 }
+
 impl Default for Camera {
     fn default() -> Self {
         Self {
@@ -82,7 +83,7 @@ impl Camera {
             );
             return;
         }
-        let grid = 10f64.powf((diagonal / 8.).log10().floor());
+        let grid = 10f64.powf((diagonal / 8.).log10().ceil());
         for i in -12..=12 {
             let offset = f64::from(i) * grid;
             for (a, b) in [
@@ -131,14 +132,6 @@ impl Camera {
                 ));
             }
         }
-        faces.sort_by(|a, b| a.0.total_cmp(&b.0));
-        for (_, points, color) in faces {
-            painter.add(egui::Shape::convex_polygon(
-                points.to_vec(),
-                color,
-                Stroke::NONE,
-            ));
-        }
         for part in &scene.parts {
             for (a, b) in &part.mesh.edges {
                 painter.line_segment(
@@ -146,6 +139,14 @@ impl Camera {
                     Stroke::new(0.8, Color32::from_rgb(83, 103, 111)),
                 );
             }
+        }
+        faces.sort_by(|a, b| a.0.total_cmp(&b.0));
+        for (_, points, color) in faces {
+            painter.add(egui::Shape::convex_polygon(
+                points.to_vec(),
+                color,
+                Stroke::NONE,
+            ));
         }
         if scan_overlay {
             for scan in scene
@@ -185,5 +186,57 @@ impl Camera {
             FontId::proportional(11.),
             Color32::from_rgb(103, 120, 132),
         );
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn pointer_gestures_orbit_and_pan_the_view() {
+        let context = egui::Context::default();
+        let mut camera = Camera::default();
+        let initial_yaw = camera.yaw;
+        let start = Pos2::new(200., 180.);
+        let end = Pos2::new(260., 200.);
+        let frame = |events: Vec<egui::Event>, camera: &mut Camera| {
+            let input = egui::RawInput {
+                screen_rect: Some(egui::Rect::from_min_size(Pos2::ZERO, Vec2::new(800., 600.))),
+                events,
+                ..Default::default()
+            };
+            let mut output = context.run_ui(input, |ui| {
+                camera.show(ui, &Scene::default(), "root", false, "", 400.);
+            });
+            output.textures_delta.clear();
+        };
+        let button = |pos, button, pressed| egui::Event::PointerButton {
+            pos,
+            button,
+            pressed,
+            modifiers: egui::Modifiers::NONE,
+        };
+        frame(vec![egui::Event::PointerMoved(start)], &mut camera);
+        frame(
+            vec![button(start, egui::PointerButton::Primary, true)],
+            &mut camera,
+        );
+        frame(vec![egui::Event::PointerMoved(end)], &mut camera);
+        assert_ne!(camera.yaw, initial_yaw);
+        frame(
+            vec![button(end, egui::PointerButton::Primary, false)],
+            &mut camera,
+        );
+        frame(
+            vec![button(end, egui::PointerButton::Secondary, true)],
+            &mut camera,
+        );
+        frame(vec![egui::Event::PointerMoved(start)], &mut camera);
+        assert_ne!(camera.pan, Vec2::ZERO);
+        camera.fit();
+        assert_eq!(camera.pan, Vec2::ZERO);
+        camera.reset();
+        assert_eq!(camera.yaw, initial_yaw);
     }
 }

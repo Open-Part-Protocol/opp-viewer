@@ -6,6 +6,8 @@ Open a design or as-built package to inspect its product structure, nominal geom
 
 **Status: first working prototype, supporting OPP `0.1.0-draft.1`.** The format and viewer are still under development. Package checks cover archive integrity, the embedded draft schemas, and selected record relationships. They do not establish engineering correctness, authenticity, full GD&T interpretation, or AS9102 certification.
 
+![Native OPP Viewer reviewing an as-built package](docs/design/native-preview.png)
+
 ## Run
 
 Install [Rust](https://www.rust-lang.org/tools/install), then:

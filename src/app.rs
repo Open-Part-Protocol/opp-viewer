@@ -150,14 +150,17 @@ impl Viewer {
         self.pending = Some(rx);
         self.error = None;
         thread::spawn(move || {
-            let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| match source {
-                Source::File(path) => Package::open(&path),
-                Source::Sample(index) => {
-                    Package::from_bytes(SAMPLES[index].1, &format!("{}.opp", SAMPLES[index].0))
-                }
+            let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                let package = match source {
+                    Source::File(path) => Package::open(&path),
+                    Source::Sample(index) => {
+                        Package::from_bytes(SAMPLES[index].1, &format!("{}.opp", SAMPLES[index].0))
+                    }
+                }?;
+                Ok::<_, anyhow::Error>(Loaded::new(package))
             }));
             let result = match result {
-                Ok(result) => result.map(Loaded::new).map_err(|e| format!("{e:#}")),
+                Ok(result) => result.map_err(|e| format!("{e:#}")),
                 Err(_) => Err(
                     "The package could not be reviewed safely. The previous document remains open."
                         .into(),
@@ -232,20 +235,10 @@ impl Viewer {
         });
     }
     fn observation<'a>(&self, p: &'a Package, r: &Value) -> Option<&'a Value> {
-        p.actual.as_ref().and_then(|a| {
-            array(a, "observations").iter().find(|o| {
-                text(o, "requirementId") == text(r, "id")
-                    && text(o, "subjectId") == self.selected_subject
-            })
-        })
+        p.review_observation(text(r, "id"), &self.selected_subject)
     }
     fn evaluation<'a>(&self, p: &'a Package, r: &Value) -> Option<&'a Value> {
-        p.actual.as_ref().and_then(|a| {
-            array(a, "evaluations").iter().find(|e| {
-                text(e, "requirementId") == text(r, "id")
-                    && text(e, "subjectId") == self.selected_subject
-            })
-        })
+        p.latest_evaluation(text(r, "id"), &self.selected_subject)
     }
     fn requirements(&mut self, ui: &mut egui::Ui, p: &Package) {
         let node = p.nodes.iter().find(|n| n.key == self.selected_node);
@@ -367,6 +360,8 @@ impl Viewer {
         }
         TableBuilder::new(ui)
             .id_salt(collection)
+            .vscroll(false)
+            .sense(egui::Sense::click())
             .striped(true)
             .resizable(true)
             .cell_layout(egui::Layout::left_to_right(egui::Align::Center))
@@ -381,9 +376,20 @@ impl Viewer {
             .body(|body| {
                 body.rows(42., records.len(), |mut row| {
                     let item = &records[row.index()];
-                    for (_, key) in columns {
+                    for (index, (_, key)) in columns.iter().enumerate() {
                         row.col(|ui| {
-                            ui.label(value_label(&item[*key]));
+                            let label = record_label(actual, key, &item[*key]);
+                            if index == 0 {
+                                if ui
+                                    .selectable_label(false, label)
+                                    .on_hover_text("Open complete record")
+                                    .clicked()
+                                {
+                                    self.detail = Some((human(collection), item.clone()));
+                                }
+                            } else {
+                                ui.label(label);
+                            }
                         });
                     }
                     if row.response().clicked() {
@@ -760,13 +766,36 @@ impl eframe::App for Viewer {
                                         ("Recorded status", "status"),
                                     ],
                                 );
+                                ui.separator();
+                                self.records(
+                                    ui,
+                                    actual,
+                                    "productionCells",
+                                    &[
+                                        ("Cell", "name"),
+                                        ("Site", "site"),
+                                        ("Line", "line"),
+                                        ("Company", "organizationId"),
+                                    ],
+                                );
+                                ui.separator();
+                                self.records(
+                                    ui,
+                                    actual,
+                                    "actors",
+                                    &[
+                                        ("Company / person", "name"),
+                                        ("Type", "kind"),
+                                        ("Company", "organizationId"),
+                                    ],
+                                );
                             } else {
                                 self.records(
                                     ui,
                                     actual,
                                     "equipment",
                                     &[
-                                        ("Equipment", "name"),
+                                        ("Equipment", "model"),
                                         ("Identifier", "id"),
                                         ("Serial", "serialNumber"),
                                     ],
@@ -839,6 +868,15 @@ fn field(ui: &mut egui::Ui, label: &str, value: &str, color: Color32) {
     ui.add_space(3.);
 }
 fn human(value: &str) -> String {
+    let value = match value {
+        "productionEvents" => "Production events",
+        "materialLots" => "Material lots",
+        "faiReports" => "First article reports",
+        "productionCells" => "Production cells",
+        "actors" => "Companies and people",
+        "runs" => "Inspection and test runs",
+        _ => value,
+    };
     let value = value.replace('-', " ");
     let mut chars = value.chars();
     match chars.next() {
@@ -947,4 +985,27 @@ fn json_preview(ui: &mut egui::Ui, value: &Value) {
     if clipped.len() < pretty.len() {
         ui.label("Preview is limited to 64,000 characters. Full records remain preserved in the package.");
     }
+}
+
+fn record_label(actual: &Value, key: &str, value: &Value) -> String {
+    let collection = match key {
+        "organizationId" | "actorId" => "actors",
+        "cellId" => "productionCells",
+        "equipmentId" => "equipment",
+        _ => return value_label(value),
+    };
+    value
+        .as_str()
+        .and_then(|id| find(actual, collection, id).ok())
+        .map(|v| {
+            if !text(v, "name").is_empty() {
+                text(v, "name").to_owned()
+            } else if !text(v, "model").is_empty() {
+                text(v, "model").to_owned()
+            } else {
+                text(v, "id").to_owned()
+            }
+        })
+        .filter(|s| !s.is_empty())
+        .unwrap_or_else(|| value_label(value))
 }

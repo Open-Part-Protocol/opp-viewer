@@ -8,7 +8,7 @@ Target draft: `0.1.0-draft.1`. “Review” means displaying the recorded defini
 | JSON | Strict duplicate-key rejection and draft schemas | 8 MiB per JSON resource; text previews stop at 64,000 characters |
 | Design snapshot | Design document hash and pinned geometry/bindings/supporting resources | Authenticity/signatures not assessed |
 | Parts/assemblies | Definition tree, nested instances, rigid placements, full paths | At most 2,000 expanded nodes and depth 64; reflected/scaled transforms rejected |
-| Actual identity | Selected subject/serial/lot, scoped measurements and scans | No aggregate lot certification; one subject selected at a time |
+| Actual identity | Selected subject/serial/lot, scoped measurements and scans | No aggregate lot certification; one subject selected at a time; latest evaluation and its associated observation shown, older results preserved in Package |
 | Requirements | Typed definitions, bounds, results, acceptance, raw details | Complex GD&T/material/process semantics are displayed, not independently interpreted |
 | Evaluations | Selected relationship/time checks; decimal simple limits and scoped deviations | No uncertainty-based decision rules, complete FAIR coverage engine, or AS9102 compliance certificate |
 | Production | Events, material lots, operators/company/cell references in full records | Recorded history only; no production execution controls |

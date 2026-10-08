@@ -107,6 +107,58 @@ fn actual_exceptions_preserve_failed_measurement() {
 }
 
 #[test]
+fn displays_latest_evaluation_with_its_own_retest_measurement() {
+    let mut package = Package::from_bytes(BLOCK, "block.opp").unwrap();
+    let actual = package.actual.as_mut().unwrap();
+    let mut observation = actual["observations"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|o| text(o, "requirementId") == "req-width")
+        .unwrap()
+        .clone();
+    observation["id"] = "retest-width".into();
+    observation["observedAt"] = "2026-10-03T10:00:00-04:00".into();
+    observation["value"]["quantity"]["value"] = "20.010".into();
+    actual["observations"]
+        .as_array_mut()
+        .unwrap()
+        .push(observation);
+    let mut evaluation = actual["evaluations"]
+        .as_array()
+        .unwrap()
+        .iter()
+        .find(|e| text(e, "requirementId") == "req-width")
+        .unwrap()
+        .clone();
+    evaluation["id"] = "evaluation-retest-width".into();
+    evaluation["evaluatedAt"] = "2026-10-03T16:00:00-04:00".into();
+    evaluation["observationIds"] = serde_json::json!(["retest-width"]);
+    evaluation["conformance"] = "pass".into();
+    actual["evaluations"]
+        .as_array_mut()
+        .unwrap()
+        .push(evaluation);
+    assert_eq!(
+        package
+            .latest_evaluation("req-width", "physical-block")
+            .unwrap()["id"],
+        "evaluation-retest-width"
+    );
+    assert_eq!(
+        package
+            .review_observation("req-width", "physical-block")
+            .unwrap()["value"]["quantity"]["value"],
+        "20.010"
+    );
+    assert!(
+        package
+            .latest_evaluation("req-width", "another-subject")
+            .is_none()
+    );
+}
+
+#[test]
 fn rejects_corrupt_transport_hash() {
     let mut files = read_archive(BLOCK).unwrap();
     files.get_mut("evidence/test.csv").unwrap().push(b'!');
