@@ -1,0 +1,29 @@
+[package]
+name = "opp-viewer"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.99"
+description = "Native offline Open Part Protocol design and as-built viewer"
+license = "Apache-2.0"
+repository = "https://github.com/Open-Part-Protocol/opp-viewer"
+
+[dependencies]
+anyhow = "1.0"
+chrono = { version = "0.4", default-features = false, features = ["std"] }
+eframe = { version = "0.36.2", default-features = false, features = ["default_fonts", "glow", "x11", "wayland", "accesskit"] }
+egui_extras = "0.36.2"
+jsonschema = { version = "0.58.6", default-features = false }
+regex = "1"
+rfd = "0.17.2"
+rust_decimal = "1.43"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+truck-stepio = "0.3.0"
+truck-meshalgo = "0.4.0"
+zip = { version = "8.6.0", default-features = false, features = ["deflate"] }
+
+[profile.release]
+lto = "thin"
+strip = true
+

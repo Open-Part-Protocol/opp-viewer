@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:opp:schema:0.1.0-draft.1:as-built",
+  "title": "OPP V0 as-built (working draft)",
+  "$ref": "urn:opp:schema:0.1.0-draft.1:common#/$defs/AsBuilt"
+}

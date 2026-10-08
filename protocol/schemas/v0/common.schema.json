@@ -1,0 +1,5018 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:opp:schema:0.1.0-draft.1:common",
+  "title": "OPP V0 common data model (working draft)",
+  "$defs": {
+    "Id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+    },
+    "Decimal": {
+      "type": "string",
+      "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+    },
+    "Quantity": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "string",
+          "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+        },
+        "unit": {
+          "type": "string",
+          "enum": [
+            "1",
+            "mm",
+            "cm",
+            "m",
+            "um",
+            "in",
+            "mm2",
+            "m2",
+            "mm3",
+            "m3",
+            "deg",
+            "rad",
+            "s",
+            "min",
+            "h",
+            "kg",
+            "g",
+            "N",
+            "kN",
+            "N.m",
+            "N/mm",
+            "Pa",
+            "kPa",
+            "MPa",
+            "bar",
+            "K",
+            "Cel",
+            "mL/min",
+            "L/min",
+            "percent",
+            "HRC",
+            "HRB",
+            "HV",
+            "HBW",
+            "ShoreA",
+            "ShoreD",
+            "Ohm",
+            "V",
+            "A",
+            "W",
+            "Hz",
+            "g/cm3",
+            "kg/m3"
+          ]
+        }
+      },
+      "required": [
+        "value",
+        "unit"
+      ],
+      "additionalProperties": false
+    },
+    "Range": {
+      "type": "object",
+      "properties": {
+        "lower": {
+          "type": "string",
+          "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+        },
+        "upper": {
+          "type": "string",
+          "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+        },
+        "unit": {
+          "type": "string",
+          "enum": [
+            "1",
+            "mm",
+            "cm",
+            "m",
+            "um",
+            "in",
+            "mm2",
+            "m2",
+            "mm3",
+            "m3",
+            "deg",
+            "rad",
+            "s",
+            "min",
+            "h",
+            "kg",
+            "g",
+            "N",
+            "kN",
+            "N.m",
+            "N/mm",
+            "Pa",
+            "kPa",
+            "MPa",
+            "bar",
+            "K",
+            "Cel",
+            "mL/min",
+            "L/min",
+            "percent",
+            "HRC",
+            "HRB",
+            "HV",
+            "HBW",
+            "ShoreA",
+            "ShoreD",
+            "Ohm",
+            "V",
+            "A",
+            "W",
+            "Hz",
+            "g/cm3",
+            "kg/m3"
+          ]
+        },
+        "lowerInclusive": {
+          "type": "boolean"
+        },
+        "upperInclusive": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "unit",
+        "lowerInclusive",
+        "upperInclusive"
+      ],
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "lower"
+          ]
+        },
+        {
+          "required": [
+            "upper"
+          ]
+        }
+      ]
+    },
+    "Vector3": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+      },
+      "minItems": 3,
+      "maxItems": 3
+    },
+    "Rotation3": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+      },
+      "minItems": 9,
+      "maxItems": 9
+    },
+    "Transform": {
+      "type": "object",
+      "properties": {
+        "translation": {
+          "$ref": "#/$defs/Vector3"
+        },
+        "translationUnit": {
+          "type": "string",
+          "enum": [
+            "mm",
+            "cm",
+            "m",
+            "um",
+            "in"
+          ]
+        },
+        "rotation": {
+          "$ref": "#/$defs/Rotation3"
+        }
+      },
+      "required": [
+        "translation",
+        "translationUnit",
+        "rotation"
+      ],
+      "additionalProperties": false
+    },
+    "ExternalIdentifier": {
+      "type": "object",
+      "properties": {
+        "authority": {
+          "type": "string",
+          "format": "uri"
+        },
+        "value": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "cad-persistent-id",
+            "uuid",
+            "supplier-id",
+            "customer-id",
+            "qif-id",
+            "other"
+          ]
+        }
+      },
+      "required": [
+        "authority",
+        "value",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "Extension": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "format": "uri"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "profileId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "data": {
+          "type": "object"
+        }
+      },
+      "required": [
+        "namespace",
+        "version",
+        "required",
+        "profileId",
+        "data"
+      ],
+      "additionalProperties": false
+    },
+    "Actor": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "organization",
+            "person",
+            "software"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "organizationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "address": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supplierCode": {
+          "type": "string",
+          "minLength": 1
+        },
+        "softwareVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "externalIdentifiers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExternalIdentifier"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "name"
+      ],
+      "additionalProperties": false
+    },
+    "Approval": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "actorId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "organizationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "designer",
+            "release-authority",
+            "inspector",
+            "quality-authority",
+            "customer",
+            "reviewer"
+          ]
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "statement": {
+          "type": "string",
+          "minLength": 1
+        },
+        "evidenceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "actorId",
+        "role",
+        "approvedAt",
+        "statement"
+      ],
+      "additionalProperties": false
+    },
+    "Provenance": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "enum": [
+            "native-cad",
+            "import",
+            "manual",
+            "ai-extracted"
+          ]
+        },
+        "sourceResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "sourceEntityRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^#[1-9][0-9]*$"
+          },
+          "minItems": 0
+        },
+        "sourceObjectId": {
+          "type": "string",
+          "minLength": 1
+        },
+        "tool": {
+          "type": "string",
+          "minLength": 1
+        },
+        "toolVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recordedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "reviewedByActorId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "method"
+      ],
+      "additionalProperties": false
+    },
+    "Profile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "version": {
+          "type": "string",
+          "minLength": 1
+        },
+        "required": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "id",
+        "version",
+        "required"
+      ],
+      "additionalProperties": false
+    },
+    "Resource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "path": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_-]+(?:/[A-Za-z0-9_-]+)*(?:\\.[A-Za-z0-9_-]+)?$"
+        },
+        "mediaType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "design",
+            "as-built",
+            "bindings",
+            "presentation",
+            "nominal-geometry",
+            "source",
+            "evidence",
+            "document",
+            "preview",
+            "conversion-report",
+            "baseline-as-built"
+          ]
+        },
+        "size": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "id",
+        "path",
+        "mediaType",
+        "role",
+        "size",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "Manifest": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "const": "OPP"
+        },
+        "formatVersion": {
+          "const": "0.1.0-draft.1"
+        },
+        "packageId": {
+          "type": "string",
+          "pattern": "^urn:uuid:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+        },
+        "packageType": {
+          "type": "string",
+          "enum": [
+            "design",
+            "as-built"
+          ]
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "generator": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "name",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "designResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "bindingsResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "asBuiltResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "presentationResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Profile"
+          },
+          "minItems": 1
+        },
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Resource"
+          },
+          "minItems": 1
+        },
+        "extensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Extension"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "format",
+        "formatVersion",
+        "packageId",
+        "packageType",
+        "createdAt",
+        "generator",
+        "designResourceId",
+        "bindingsResourceId",
+        "profiles",
+        "resources"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "packageType": {
+                "const": "as-built"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "asBuiltResourceId"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "asBuiltResourceId"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "StandardReference": {
+      "type": "object",
+      "properties": {
+        "publisher": {
+          "type": "string",
+          "minLength": 1
+        },
+        "number": {
+          "type": "string",
+          "minLength": 1
+        },
+        "edition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "clause": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uri": {
+          "type": "string",
+          "format": "uri"
+        }
+      },
+      "required": [
+        "publisher",
+        "number",
+        "edition"
+      ],
+      "additionalProperties": false
+    },
+    "Document": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "title": {
+          "type": "string",
+          "minLength": 1
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "normative",
+            "informative",
+            "procedure",
+            "certificate"
+          ]
+        },
+        "dependencyStatus": {
+          "type": "string",
+          "enum": [
+            "embedded",
+            "recipient-supplied",
+            "missing"
+          ]
+        },
+        "resourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "standard": {
+          "$ref": "#/$defs/StandardReference"
+        },
+        "dependsOnDocumentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "role",
+        "dependencyStatus"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "dependencyStatus": {
+                "const": "embedded"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "resourceId"
+            ]
+          },
+          "else": {
+            "not": {
+              "required": [
+                "resourceId"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "Interpretation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "family": {
+          "type": "string",
+          "enum": [
+            "asme-gdt",
+            "iso-gps",
+            "opp-explicit",
+            "customer"
+          ]
+        },
+        "profileId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "standardDocumentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "family",
+        "profileId",
+        "standardDocumentIds",
+        "description"
+      ],
+      "additionalProperties": false
+    },
+    "ProductDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "namespace": {
+          "type": "string",
+          "format": "uri"
+        },
+        "partNumber": {
+          "type": "string",
+          "minLength": 1
+        },
+        "revision": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "part",
+            "assembly",
+            "kit",
+            "consumable"
+          ]
+        },
+        "supply": {
+          "type": "string",
+          "enum": [
+            "manufactured",
+            "purchased"
+          ]
+        },
+        "externalIdentifiers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExternalIdentifier"
+          },
+          "minItems": 0
+        },
+        "supplierActorId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "supplierPartNumber": {
+          "type": "string",
+          "minLength": 1
+        },
+        "extensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Extension"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "namespace",
+        "partNumber",
+        "revision",
+        "name",
+        "kind",
+        "supply"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "supply": {
+                "const": "purchased"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "supplierActorId",
+              "supplierPartNumber"
+            ]
+          }
+        }
+      ]
+    },
+    "State": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "productDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "finished",
+            "uncoated",
+            "coated",
+            "free",
+            "restrained",
+            "flat",
+            "formed",
+            "intermediate",
+            "custom"
+          ]
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "productDefinitionId",
+        "name",
+        "kind"
+      ],
+      "additionalProperties": false
+    },
+    "Condition": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "required": [
+            "quantity"
+          ],
+          "not": {
+            "required": [
+              "text"
+            ]
+          }
+        },
+        {
+          "required": [
+            "text"
+          ],
+          "not": {
+            "required": [
+              "quantity"
+            ]
+          }
+        }
+      ]
+    },
+    "CoordinateFrame": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "productDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "unit": {
+          "type": "string",
+          "enum": [
+            "mm",
+            "cm",
+            "m",
+            "um",
+            "in"
+          ]
+        },
+        "parentFrameId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "transform": {
+          "$ref": "#/$defs/Transform"
+        }
+      },
+      "required": [
+        "id",
+        "productDefinitionId",
+        "name",
+        "unit"
+      ],
+      "additionalProperties": false,
+      "dependentRequired": {
+        "parentFrameId": [
+          "transform"
+        ],
+        "transform": [
+          "parentFrameId"
+        ]
+      }
+    },
+    "Representation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "productDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "stateId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "resourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "frameId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "nominal-exact",
+            "nominal-envelope",
+            "derived-preview",
+            "source"
+          ]
+        },
+        "encoding": {
+          "type": "string",
+          "enum": [
+            "step-part21",
+            "step-ap242-xml",
+            "glb",
+            "x3d",
+            "ply",
+            "other"
+          ]
+        },
+        "applicationProtocol": {
+          "type": "string",
+          "minLength": 1
+        },
+        "schemaIdentifier": {
+          "type": "string",
+          "minLength": 1
+        },
+        "edition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "validationProperties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "enum": [
+                  "volume",
+                  "area",
+                  "centroid-x",
+                  "centroid-y",
+                  "centroid-z"
+                ]
+              },
+              "quantity": {
+                "$ref": "#/$defs/Quantity"
+              },
+              "tolerance": {
+                "$ref": "#/$defs/Quantity"
+              }
+            },
+            "required": [
+              "name",
+              "quantity",
+              "tolerance"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "productDefinitionId",
+        "stateId",
+        "resourceId",
+        "frameId",
+        "role",
+        "encoding"
+      ],
+      "additionalProperties": false
+    },
+    "Region": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "productDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "stateId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "representationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "whole-representation",
+            "entity-set",
+            "trimmed-surface",
+            "volume"
+          ]
+        },
+        "bindingIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "boundaryResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "id",
+        "productDefinitionId",
+        "stateId",
+        "representationId",
+        "name",
+        "kind"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "entity-set"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "bindingIds"
+            ],
+            "properties": {
+              "bindingIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+                },
+                "minItems": 1
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "enum": [
+                  "trimmed-surface",
+                  "volume"
+                ]
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "boundaryResourceId",
+              "bindingIds"
+            ],
+            "properties": {
+              "bindingIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+                },
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Feature": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "productDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "stateId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "surface",
+            "plane-pair",
+            "bore",
+            "hole",
+            "hole-pattern",
+            "thread",
+            "slot",
+            "edge",
+            "body",
+            "interface",
+            "custom"
+          ]
+        },
+        "regionIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "externalIdentifiers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExternalIdentifier"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "productDefinitionId",
+        "stateId",
+        "name",
+        "kind",
+        "regionIds"
+      ],
+      "additionalProperties": false
+    },
+    "Subject": {
+      "type": "object",
+      "properties": {
+        "productDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "featureId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "regionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "occurrencePath": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "connectionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "productDefinitionId"
+      ],
+      "additionalProperties": false,
+      "not": {
+        "allOf": [
+          {
+            "required": [
+              "featureId"
+            ]
+          },
+          {
+            "required": [
+              "regionId"
+            ]
+          }
+        ]
+      }
+    },
+    "Occurrence": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "parentDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "childDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "transform": {
+          "$ref": "#/$defs/Transform"
+        },
+        "externalIdentifiers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExternalIdentifier"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "parentDefinitionId",
+        "childDefinitionId",
+        "name",
+        "transform"
+      ],
+      "additionalProperties": false
+    },
+    "Connection": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "parentDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "weld",
+            "braze",
+            "bond",
+            "fastener",
+            "fit",
+            "contact",
+            "electrical",
+            "other"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "participants": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "minItems": 2
+        }
+      },
+      "required": [
+        "id",
+        "parentDefinitionId",
+        "kind",
+        "name",
+        "participants"
+      ],
+      "additionalProperties": false
+    },
+    "MaterialDefinition": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "family": {
+          "type": "string",
+          "enum": [
+            "metal",
+            "polymer",
+            "ceramic",
+            "composite",
+            "elastomer",
+            "adhesive",
+            "coating",
+            "other"
+          ]
+        },
+        "grade": {
+          "type": "string",
+          "minLength": 1
+        },
+        "condition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "productForm": {
+          "type": "string",
+          "minLength": 1
+        },
+        "specificationDocumentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "limits": {
+                "$ref": "#/$defs/Range"
+              },
+              "methodDocumentId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+              }
+            },
+            "required": [
+              "name",
+              "limits"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "family",
+        "specificationDocumentIds"
+      ],
+      "additionalProperties": false
+    },
+    "Datum": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "productDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "stateId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 1
+        },
+        "featureIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "targetRegions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "productDefinitionId",
+        "stateId",
+        "label",
+        "featureIds"
+      ],
+      "additionalProperties": false
+    },
+    "DatumSystem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "productDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "stateId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "compartments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "datumIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+                },
+                "minItems": 1
+              },
+              "modifiers": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "maximum-material",
+                    "least-material",
+                    "regardless-material",
+                    "free-state",
+                    "tangent-plane",
+                    "all-around",
+                    "all-over",
+                    "common-zone",
+                    "translation",
+                    "basic"
+                  ]
+                },
+                "minItems": 0
+              }
+            },
+            "required": [
+              "datumIds",
+              "modifiers"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "id",
+        "productDefinitionId",
+        "stateId",
+        "compartments"
+      ],
+      "additionalProperties": false
+    },
+    "DimensionSpec": {
+      "type": "object",
+      "properties": {
+        "characteristic": {
+          "type": "string",
+          "enum": [
+            "length",
+            "width",
+            "height",
+            "diameter",
+            "radius",
+            "thickness",
+            "distance",
+            "angle",
+            "curve-length",
+            "spherical-diameter",
+            "spherical-radius"
+          ]
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "toleranced",
+            "basic",
+            "reference"
+          ]
+        },
+        "nominal": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "limits": {
+          "$ref": "#/$defs/Range"
+        },
+        "direction": {
+          "$ref": "#/$defs/Vector3"
+        },
+        "frameId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "relatedSubjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "minItems": 0
+        },
+        "displayDecimals": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "characteristic",
+        "mode"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "mode": {
+                "const": "toleranced"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "limits"
+            ]
+          },
+          "else": {
+            "required": [
+              "nominal"
+            ],
+            "not": {
+              "required": [
+                "limits"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "GdtSegment": {
+      "type": "object",
+      "properties": {
+        "characteristic": {
+          "type": "string",
+          "enum": [
+            "flatness",
+            "straightness",
+            "circularity",
+            "cylindricity",
+            "parallelism",
+            "perpendicularity",
+            "angularity",
+            "position",
+            "profile-line",
+            "profile-surface",
+            "circular-runout",
+            "total-runout"
+          ]
+        },
+        "tolerance": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "zone": {
+          "type": "string",
+          "enum": [
+            "two-planes",
+            "cylinder",
+            "sphere",
+            "line",
+            "radial",
+            "profile"
+          ]
+        },
+        "datumSystemId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "modifiers": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "maximum-material",
+              "least-material",
+              "regardless-material",
+              "free-state",
+              "tangent-plane",
+              "all-around",
+              "all-over",
+              "common-zone",
+              "translation",
+              "basic"
+            ]
+          },
+          "minItems": 0
+        },
+        "zoneOffset": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "projectedLength": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "maximumTolerance": {
+          "$ref": "#/$defs/Quantity"
+        }
+      },
+      "required": [
+        "characteristic",
+        "tolerance",
+        "zone",
+        "modifiers"
+      ],
+      "additionalProperties": false
+    },
+    "GdtSpec": {
+      "type": "object",
+      "properties": {
+        "segments": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/GdtSegment"
+          },
+          "minItems": 1
+        },
+        "relationship": {
+          "type": "string",
+          "enum": [
+            "independent",
+            "composite",
+            "simultaneous"
+          ]
+        }
+      },
+      "required": [
+        "segments",
+        "relationship"
+      ],
+      "additionalProperties": false
+    },
+    "MaterialSpec": {
+      "type": "object",
+      "properties": {
+        "materialDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "permittedAlternativeMaterialIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "substitutionRequiresApproval": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "materialDefinitionId",
+        "permittedAlternativeMaterialIds",
+        "substitutionRequiresApproval"
+      ],
+      "additionalProperties": false
+    },
+    "TextureSpec": {
+      "type": "object",
+      "properties": {
+        "parameter": {
+          "type": "string",
+          "enum": [
+            "Ra",
+            "Rq",
+            "Rz",
+            "Rt",
+            "Sa",
+            "Sq",
+            "Sz"
+          ]
+        },
+        "limits": {
+          "$ref": "#/$defs/Range"
+        },
+        "cutoff": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "evaluationLength": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "lay": {
+          "type": "string",
+          "minLength": 1
+        },
+        "filter": {
+          "type": "string",
+          "minLength": 1
+        },
+        "methodDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "parameter",
+        "limits"
+      ],
+      "additionalProperties": false
+    },
+    "CoatingSpec": {
+      "type": "object",
+      "properties": {
+        "layers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "process": {
+                "type": "string",
+                "minLength": 1
+              },
+              "materialDefinitionId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+              },
+              "thickness": {
+                "$ref": "#/$defs/Range"
+              },
+              "specificationDocumentId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+              }
+            },
+            "required": [
+              "process",
+              "thickness"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        },
+        "excludedSubjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "minItems": 0
+        },
+        "dimensionBasis": {
+          "type": "string",
+          "enum": [
+            "before-coating",
+            "after-coating"
+          ]
+        },
+        "color": {
+          "type": "string",
+          "minLength": 1
+        },
+        "gloss": {
+          "$ref": "#/$defs/Range"
+        }
+      },
+      "required": [
+        "layers",
+        "excludedSubjects",
+        "dimensionBasis"
+      ],
+      "additionalProperties": false
+    },
+    "HeatTreatmentSpec": {
+      "type": "object",
+      "properties": {
+        "process": {
+          "type": "string",
+          "minLength": 1
+        },
+        "temperature": {
+          "$ref": "#/$defs/Range"
+        },
+        "duration": {
+          "$ref": "#/$defs/Range"
+        },
+        "hardness": {
+          "$ref": "#/$defs/Range"
+        },
+        "caseDepth": {
+          "$ref": "#/$defs/Range"
+        },
+        "specificationDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "sequenceAfterRequirementIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "process"
+      ],
+      "additionalProperties": false
+    },
+    "EdgeSpec": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": [
+            "deburr",
+            "chamfer",
+            "radius",
+            "keep-sharp"
+          ]
+        },
+        "size": {
+          "$ref": "#/$defs/Range"
+        },
+        "maximumBurrHeight": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "excludedSubjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "operation",
+        "excludedSubjects"
+      ],
+      "additionalProperties": false
+    },
+    "ThreadSpec": {
+      "type": "object",
+      "properties": {
+        "standardDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "designation": {
+          "type": "string",
+          "minLength": 1
+        },
+        "handedness": {
+          "type": "string",
+          "enum": [
+            "right",
+            "left"
+          ]
+        },
+        "pitch": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "engagementLength": {
+          "$ref": "#/$defs/Range"
+        },
+        "gaugeDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "standardDocumentId",
+        "designation",
+        "handedness"
+      ],
+      "additionalProperties": false
+    },
+    "Criterion": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "range",
+            "allowed-values",
+            "boolean",
+            "direction",
+            "document-clause"
+          ]
+        },
+        "limits": {
+          "$ref": "#/$defs/Range"
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "value": {
+          "type": "boolean"
+        },
+        "direction": {
+          "$ref": "#/$defs/Vector3"
+        },
+        "frameId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "documentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "clause": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "range"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "limits"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "allowed-values"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "values"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "boolean"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "value"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "direction"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "direction",
+              "frameId"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "document-clause"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "documentId",
+              "clause"
+            ]
+          }
+        }
+      ]
+    },
+    "ProcessConstraintSpec": {
+      "type": "object",
+      "properties": {
+        "processFamily": {
+          "type": "string",
+          "enum": [
+            "machining",
+            "molding",
+            "additive",
+            "casting",
+            "forging",
+            "forming",
+            "cutting",
+            "joining",
+            "composites",
+            "powder",
+            "extrusion",
+            "other"
+          ]
+        },
+        "prescribedProcess": {
+          "type": "string",
+          "minLength": 1
+        },
+        "controls": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "characteristic": {
+                "type": "string",
+                "minLength": 1
+              },
+              "criterion": {
+                "$ref": "#/$defs/Criterion"
+              },
+              "methodDocumentId": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+              }
+            },
+            "required": [
+              "characteristic",
+              "criterion"
+            ],
+            "additionalProperties": false
+          },
+          "minItems": 1
+        }
+      },
+      "required": [
+        "processFamily",
+        "controls"
+      ],
+      "additionalProperties": false
+    },
+    "WeldSpec": {
+      "type": "object",
+      "properties": {
+        "jointType": {
+          "type": "string",
+          "minLength": 1
+        },
+        "process": {
+          "type": "string",
+          "minLength": 1
+        },
+        "size": {
+          "$ref": "#/$defs/Range"
+        },
+        "fillerMaterialId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "procedureDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "inspectionDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "repairAllowed": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "jointType",
+        "process",
+        "repairAllowed"
+      ],
+      "additionalProperties": false
+    },
+    "BondSpec": {
+      "type": "object",
+      "properties": {
+        "adhesiveMaterialId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "bondlineThickness": {
+          "$ref": "#/$defs/Range"
+        },
+        "cureConditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "minItems": 0
+        },
+        "procedureDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "adhesiveMaterialId",
+        "bondlineThickness",
+        "cureConditions"
+      ],
+      "additionalProperties": false
+    },
+    "FastenerSpec": {
+      "type": "object",
+      "properties": {
+        "torque": {
+          "$ref": "#/$defs/Range"
+        },
+        "preload": {
+          "$ref": "#/$defs/Range"
+        },
+        "lubrication": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sequenceOccurrenceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "procedureDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [],
+      "additionalProperties": false,
+      "anyOf": [
+        {
+          "required": [
+            "torque"
+          ]
+        },
+        {
+          "required": [
+            "preload"
+          ]
+        },
+        {
+          "required": [
+            "procedureDocumentId"
+          ]
+        }
+      ]
+    },
+    "PerformanceSpec": {
+      "type": "object",
+      "properties": {
+        "characteristic": {
+          "type": "string",
+          "minLength": 1
+        },
+        "limits": {
+          "$ref": "#/$defs/Range"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "minItems": 0
+        },
+        "procedureDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "characteristic",
+        "limits",
+        "conditions"
+      ],
+      "additionalProperties": false
+    },
+    "CleanlinessSpec": {
+      "type": "object",
+      "properties": {
+        "characteristic": {
+          "type": "string",
+          "minLength": 1
+        },
+        "criterion": {
+          "$ref": "#/$defs/Criterion"
+        },
+        "procedureDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "characteristic",
+        "criterion"
+      ],
+      "additionalProperties": false
+    },
+    "MarkingSpec": {
+      "type": "object",
+      "properties": {
+        "fields": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "part-number",
+              "revision",
+              "serial-number",
+              "lot-number",
+              "company",
+              "custom"
+            ]
+          },
+          "minItems": 1
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "literalText": {
+          "type": "string",
+          "minLength": 1
+        },
+        "height": {
+          "$ref": "#/$defs/Range"
+        },
+        "depth": {
+          "$ref": "#/$defs/Range"
+        }
+      },
+      "required": [
+        "fields",
+        "method"
+      ],
+      "additionalProperties": false
+    },
+    "PackagingSpec": {
+      "type": "object",
+      "properties": {
+        "protection": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "corrosion",
+              "moisture",
+              "esd",
+              "surface",
+              "cleanliness",
+              "restraint"
+            ]
+          },
+          "minItems": 1
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "minItems": 0
+        },
+        "procedureDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "protection",
+        "conditions"
+      ],
+      "additionalProperties": false
+    },
+    "CertificationSpec": {
+      "type": "object",
+      "properties": {
+        "deliverable": {
+          "type": "string",
+          "enum": [
+            "material-certificate",
+            "test-report",
+            "conformity-declaration",
+            "process-certificate",
+            "ndt-report",
+            "substance-declaration",
+            "other"
+          ]
+        },
+        "specificationDocumentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "issuerQualifications": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "deliverable",
+        "specificationDocumentIds",
+        "issuerQualifications"
+      ],
+      "additionalProperties": false
+    },
+    "TextSpec": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "documentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "text",
+        "documentIds"
+      ],
+      "additionalProperties": false
+    },
+    "Requirement": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "dimension",
+            "geometric-tolerance",
+            "material",
+            "surface-texture",
+            "coating",
+            "heat-treatment",
+            "edge-condition",
+            "thread",
+            "process-constraint",
+            "weld",
+            "bond",
+            "fastener",
+            "performance",
+            "cleanliness",
+            "marking",
+            "packaging",
+            "certification",
+            "unresolved-text"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Subject"
+          },
+          "minItems": 1
+        },
+        "stateId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "interpretationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "criticality": {
+          "type": "string",
+          "enum": [
+            "normal",
+            "key",
+            "critical",
+            "safety"
+          ]
+        },
+        "characteristicNumber": {
+          "type": "string",
+          "minLength": 1
+        },
+        "spec": {
+          "type": "object"
+        },
+        "verificationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "overridesRequirementIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "provenance": {
+          "$ref": "#/$defs/Provenance"
+        },
+        "extensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Extension"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "name",
+        "subjects",
+        "stateId",
+        "interpretationId",
+        "criticality",
+        "spec",
+        "overridesRequirementIds"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "dimension"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/DimensionSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "geometric-tolerance"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/GdtSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "material"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/MaterialSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "surface-texture"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/TextureSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "coating"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/CoatingSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "heat-treatment"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/HeatTreatmentSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "edge-condition"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/EdgeSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "thread"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/ThreadSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "process-constraint"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/ProcessConstraintSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "weld"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/WeldSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "bond"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/BondSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "fastener"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/FastenerSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "performance"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/PerformanceSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "cleanliness"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/CleanlinessSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "marking"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/MarkingSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "packaging"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/PackagingSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "certification"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/CertificationSpec"
+              }
+            }
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "unresolved-text"
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "spec": {
+                "$ref": "#/$defs/TextSpec"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "DecisionRule": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "simple-limits",
+            "guard-band",
+            "manual",
+            "report-only"
+          ]
+        },
+        "guardBand": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "method",
+        "description"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "method": {
+                "const": "guard-band"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "guardBand"
+            ]
+          }
+        }
+      ]
+    },
+    "Verification": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "requirementIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "method": {
+          "type": "string",
+          "enum": [
+            "dimensional",
+            "visual",
+            "material-review",
+            "process-review",
+            "ndt",
+            "performance-test",
+            "document-review",
+            "other"
+          ]
+        },
+        "decisionRuleId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "procedureDocumentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "maximumExpandedUncertainty": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "coverage": {
+          "type": "string",
+          "enum": [
+            "every-instance",
+            "sample",
+            "first-article",
+            "lot"
+          ]
+        },
+        "requiredEquipmentKinds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "requirementIds",
+        "method",
+        "decisionRuleId",
+        "coverage",
+        "requiredEquipmentKinds",
+        "conditions"
+      ],
+      "additionalProperties": false
+    },
+    "Release": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": [
+            "working",
+            "review",
+            "released"
+          ]
+        },
+        "engineeringCompleteness": {
+          "type": "string",
+          "enum": [
+            "not-assessed",
+            "incomplete",
+            "author-declared-complete"
+          ]
+        },
+        "approvalIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "unresolvedItems": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "status",
+        "engineeringCompleteness",
+        "approvalIds",
+        "unresolvedItems"
+      ],
+      "additionalProperties": false
+    },
+    "ResourcePin": {
+      "type": "object",
+      "properties": {
+        "resourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      },
+      "required": [
+        "resourceId",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "Design": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "0.1.0-draft.1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "rootDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "release": {
+          "$ref": "#/$defs/Release"
+        },
+        "resourcePins": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ResourcePin"
+          },
+          "minItems": 1
+        },
+        "productDefinitions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProductDefinition"
+          },
+          "minItems": 1
+        },
+        "states": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/State"
+          },
+          "minItems": 0
+        },
+        "coordinateFrames": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/CoordinateFrame"
+          },
+          "minItems": 0
+        },
+        "representations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Representation"
+          },
+          "minItems": 0
+        },
+        "regions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Region"
+          },
+          "minItems": 0
+        },
+        "features": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Feature"
+          },
+          "minItems": 0
+        },
+        "occurrences": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Occurrence"
+          },
+          "minItems": 0
+        },
+        "connections": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Connection"
+          },
+          "minItems": 0
+        },
+        "materials": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MaterialDefinition"
+          },
+          "minItems": 0
+        },
+        "datums": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Datum"
+          },
+          "minItems": 0
+        },
+        "datumSystems": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DatumSystem"
+          },
+          "minItems": 0
+        },
+        "requirements": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Requirement"
+          },
+          "minItems": 0
+        },
+        "verifications": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Verification"
+          },
+          "minItems": 0
+        },
+        "decisionRules": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/DecisionRule"
+          },
+          "minItems": 0
+        },
+        "documents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Document"
+          },
+          "minItems": 0
+        },
+        "interpretations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Interpretation"
+          },
+          "minItems": 1
+        },
+        "actors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Actor"
+          },
+          "minItems": 0
+        },
+        "approvals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Approval"
+          },
+          "minItems": 0
+        },
+        "extensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Extension"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "id",
+        "rootDefinitionId",
+        "release",
+        "resourcePins",
+        "productDefinitions",
+        "states",
+        "coordinateFrames",
+        "representations",
+        "regions",
+        "features",
+        "occurrences",
+        "connections",
+        "materials",
+        "datums",
+        "datumSystems",
+        "requirements",
+        "verifications",
+        "decisionRules",
+        "documents",
+        "interpretations",
+        "actors",
+        "approvals"
+      ],
+      "additionalProperties": false
+    },
+    "EntityRef": {
+      "type": "object",
+      "properties": {
+        "label": {
+          "type": "string",
+          "pattern": "^#[1-9][0-9]*$"
+        },
+        "entityType": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9_]*$"
+        }
+      },
+      "required": [
+        "label",
+        "entityType"
+      ],
+      "additionalProperties": false
+    },
+    "Binding": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "regionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "representationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "resourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "resourceSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "encoding": {
+          "const": "step-part21"
+        },
+        "entities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/EntityRef"
+          },
+          "minItems": 1
+        },
+        "externalIdentifiers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExternalIdentifier"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "regionId",
+        "representationId",
+        "resourceId",
+        "resourceSha256",
+        "encoding",
+        "entities"
+      ],
+      "additionalProperties": false
+    },
+    "Bindings": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "0.1.0-draft.1"
+        },
+        "designId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "bindings": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Binding"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "designId",
+        "bindings"
+      ],
+      "additionalProperties": false
+    },
+    "DesignSnapshot": {
+      "type": "object",
+      "properties": {
+        "designId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "designResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "sourcePackageId": {
+          "type": "string",
+          "pattern": "^urn:uuid:"
+        }
+      },
+      "required": [
+        "designId",
+        "designResourceId",
+        "sha256"
+      ],
+      "additionalProperties": false
+    },
+    "PhysicalSubject": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "instance",
+            "lot"
+          ]
+        },
+        "productDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "occurrencePath": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "parentSubjectId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "serialNumber": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lotNumber": {
+          "type": "string",
+          "minLength": 1
+        },
+        "quantity": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "manufacturedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "manufacturerActorId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "externalIdentifiers": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ExternalIdentifier"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "productDefinitionId",
+        "occurrencePath"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "kind": {
+                "const": "lot"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "lotNumber",
+              "quantity"
+            ],
+            "not": {
+              "required": [
+                "serialNumber"
+              ]
+            }
+          },
+          "else": {
+            "not": {
+              "required": [
+                "quantity"
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "ProductionCell": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "organizationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "site": {
+          "type": "string",
+          "minLength": 1
+        },
+        "line": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "organizationId",
+        "site"
+      ],
+      "additionalProperties": false
+    },
+    "Equipment": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "measurement",
+            "production-machine",
+            "test-rig",
+            "fixture"
+          ]
+        },
+        "manufacturer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "model": {
+          "type": "string",
+          "minLength": 1
+        },
+        "serialNumber": {
+          "type": "string",
+          "minLength": 1
+        },
+        "organizationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "softwareVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "firmwareVersion": {
+          "type": "string",
+          "minLength": 1
+        },
+        "resolutions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Quantity"
+          },
+          "minItems": 0
+        },
+        "operatingRanges": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Range"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "manufacturer",
+        "model",
+        "serialNumber",
+        "organizationId",
+        "resolutions",
+        "operatingRanges"
+      ],
+      "additionalProperties": false
+    },
+    "Uncertainty": {
+      "type": "object",
+      "properties": {
+        "expanded": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "coverageFactor": {
+          "type": "string",
+          "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+        },
+        "confidencePercent": {
+          "type": "string",
+          "pattern": "^-?(?:0|[1-9][0-9]*)(?:\\.[0-9]+)?$"
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "budgetResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "expanded",
+        "coverageFactor",
+        "method"
+      ],
+      "additionalProperties": false
+    },
+    "Calibration": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "equipmentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "calibratedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "validUntil": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "organizationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "certificateResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "traceability": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 1
+        },
+        "uncertainty": {
+          "$ref": "#/$defs/Uncertainty"
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "valid",
+            "expired",
+            "withdrawn"
+          ]
+        }
+      },
+      "required": [
+        "id",
+        "equipmentId",
+        "calibratedAt",
+        "validUntil",
+        "organizationId",
+        "certificateResourceId",
+        "traceability",
+        "status"
+      ],
+      "additionalProperties": false
+    },
+    "MaterialLot": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "materialDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "lotNumber": {
+          "type": "string",
+          "minLength": 1
+        },
+        "heatNumber": {
+          "type": "string",
+          "minLength": 1
+        },
+        "batchNumber": {
+          "type": "string",
+          "minLength": 1
+        },
+        "supplierActorId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "certificateResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "subjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "parentMaterialLotIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "materialDefinitionId",
+        "lotNumber",
+        "supplierActorId",
+        "certificateResourceIds",
+        "subjectIds",
+        "parentMaterialLotIds"
+      ],
+      "additionalProperties": false
+    },
+    "ProductionEvent": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "subjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "processFamily": {
+          "type": "string",
+          "minLength": 1
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "endedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "organizationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "operatorActorIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "cellId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "equipmentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "materialLotIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "procedureResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "parameters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "minItems": 0
+        },
+        "evidenceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "supersedesEventId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "id",
+        "subjectIds",
+        "processFamily",
+        "name",
+        "startedAt",
+        "endedAt",
+        "organizationId",
+        "operatorActorIds",
+        "equipmentIds",
+        "materialLotIds",
+        "parameters",
+        "evidenceResourceIds"
+      ],
+      "additionalProperties": false
+    },
+    "Run": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "kind": {
+          "type": "string",
+          "enum": [
+            "inspection",
+            "test",
+            "scan",
+            "material-review",
+            "document-review"
+          ]
+        },
+        "subjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "startedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "endedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "organizationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "operatorActorIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "equipmentIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "calibrationIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "method": {
+          "type": "string",
+          "minLength": 1
+        },
+        "procedureResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Condition"
+          },
+          "minItems": 0
+        },
+        "sampling": {
+          "type": "object",
+          "properties": {
+            "strategy": {
+              "type": "string",
+              "enum": [
+                "all",
+                "single",
+                "random",
+                "stratified"
+              ]
+            },
+            "populationCount": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "sampleCount": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          "required": [
+            "strategy",
+            "populationCount",
+            "sampleCount"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "kind",
+        "subjectIds",
+        "startedAt",
+        "endedAt",
+        "organizationId",
+        "operatorActorIds",
+        "equipmentIds",
+        "calibrationIds",
+        "method",
+        "conditions",
+        "sampling"
+      ],
+      "additionalProperties": false
+    },
+    "ObservedValue": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "type": "string",
+          "enum": [
+            "scalar",
+            "boolean",
+            "text",
+            "vector",
+            "resource"
+          ]
+        },
+        "quantity": {
+          "$ref": "#/$defs/Quantity"
+        },
+        "boolean": {
+          "type": "boolean"
+        },
+        "text": {
+          "type": "string",
+          "minLength": 1
+        },
+        "vector": {
+          "$ref": "#/$defs/Vector3"
+        },
+        "unit": {
+          "type": "string",
+          "enum": [
+            "1",
+            "mm",
+            "cm",
+            "m",
+            "um",
+            "in",
+            "mm2",
+            "m2",
+            "mm3",
+            "m3",
+            "deg",
+            "rad",
+            "s",
+            "min",
+            "h",
+            "kg",
+            "g",
+            "N",
+            "kN",
+            "N.m",
+            "N/mm",
+            "Pa",
+            "kPa",
+            "MPa",
+            "bar",
+            "K",
+            "Cel",
+            "mL/min",
+            "L/min",
+            "percent",
+            "HRC",
+            "HRB",
+            "HV",
+            "HBW",
+            "ShoreA",
+            "ShoreD",
+            "Ohm",
+            "V",
+            "A",
+            "W",
+            "Hz",
+            "g/cm3",
+            "kg/m3"
+          ]
+        },
+        "resourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "kind"
+      ],
+      "additionalProperties": false,
+      "oneOf": [
+        {
+          "properties": {
+            "kind": {
+              "const": "scalar"
+            }
+          },
+          "required": [
+            "quantity"
+          ]
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "boolean"
+            }
+          },
+          "required": [
+            "boolean"
+          ]
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "text"
+            }
+          },
+          "required": [
+            "text"
+          ]
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "vector"
+            }
+          },
+          "required": [
+            "vector",
+            "unit"
+          ]
+        },
+        {
+          "properties": {
+            "kind": {
+              "const": "resource"
+            }
+          },
+          "required": [
+            "resourceId"
+          ]
+        }
+      ]
+    },
+    "Observation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "subjectId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "requirementId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "stateId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "observedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "characteristicPath": {
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "$ref": "#/$defs/ObservedValue"
+        },
+        "uncertainty": {
+          "$ref": "#/$defs/Uncertainty"
+        },
+        "evidenceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "supersedesObservationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "id",
+        "subjectId",
+        "requirementId",
+        "stateId",
+        "runId",
+        "observedAt",
+        "characteristicPath",
+        "value",
+        "evidenceResourceIds"
+      ],
+      "additionalProperties": false
+    },
+    "Evaluation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "subjectId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "requirementId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "observationIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "decisionRuleId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "evaluatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "evaluatorActorId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "conformance": {
+          "type": "string",
+          "enum": [
+            "pass",
+            "fail",
+            "indeterminate",
+            "not-inspected"
+          ]
+        },
+        "disposition": {
+          "type": "string",
+          "enum": [
+            "accepted",
+            "rejected",
+            "pending",
+            "accepted-under-deviation"
+          ]
+        },
+        "deviationId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "rationale": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "subjectId",
+        "requirementId",
+        "observationIds",
+        "decisionRuleId",
+        "evaluatedAt",
+        "evaluatorActorId",
+        "conformance",
+        "disposition",
+        "rationale"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "disposition": {
+                "const": "accepted-under-deviation"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "deviationId"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "conformance": {
+                "enum": [
+                  "pass",
+                  "fail"
+                ]
+              }
+            }
+          },
+          "then": {
+            "properties": {
+              "observationIds": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+                },
+                "minItems": 1
+              }
+            }
+          }
+        }
+      ]
+    },
+    "Scan": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "subjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "runId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "resourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "dataClass": {
+          "type": "string",
+          "enum": [
+            "point-cloud",
+            "mesh",
+            "ct-volume"
+          ]
+        },
+        "capturedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "equipmentId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "unit": {
+          "type": "string",
+          "enum": [
+            "mm",
+            "cm",
+            "m",
+            "um",
+            "in"
+          ]
+        },
+        "registration": {
+          "type": "object",
+          "properties": {
+            "method": {
+              "type": "string",
+              "enum": [
+                "datum-system",
+                "best-fit",
+                "fiducial",
+                "none"
+              ]
+            },
+            "designFrameId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+            },
+            "datumSystemId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+            },
+            "transform": {
+              "$ref": "#/$defs/Transform"
+            },
+            "fitResidual": {
+              "$ref": "#/$defs/Quantity"
+            },
+            "settingsResourceId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "method",
+            "designFrameId",
+            "transform"
+          ],
+          "additionalProperties": false
+        },
+        "uncertainty": {
+          "$ref": "#/$defs/Uncertainty"
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "subjectIds",
+        "runId",
+        "resourceId",
+        "dataClass",
+        "capturedAt",
+        "equipmentId",
+        "unit",
+        "registration",
+        "description"
+      ],
+      "additionalProperties": false
+    },
+    "Deviation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "subjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "requirementIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "description": {
+          "type": "string",
+          "minLength": 1
+        },
+        "disposition": {
+          "type": "string",
+          "enum": [
+            "use-as-is",
+            "rework",
+            "repair",
+            "scrap"
+          ]
+        },
+        "approvalIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "approvedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "quantityLimit": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "evidenceResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "id",
+        "subjectIds",
+        "requirementIds",
+        "description",
+        "disposition",
+        "approvalIds",
+        "approvedAt",
+        "evidenceResourceIds"
+      ],
+      "additionalProperties": false
+    },
+    "Fai": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "full",
+            "partial"
+          ]
+        },
+        "status": {
+          "type": "string",
+          "enum": [
+            "incomplete",
+            "complete"
+          ]
+        },
+        "subjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "requirementIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 1
+        },
+        "evaluationIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "materialLotIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "productionEventIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "deviationIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "approvalIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "reportResourceIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        },
+        "baseline": {
+          "type": "object",
+          "properties": {
+            "resourceId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "designId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+            }
+          },
+          "required": [
+            "resourceId",
+            "sha256",
+            "designId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "status",
+        "subjectIds",
+        "requirementIds",
+        "evaluationIds",
+        "materialLotIds",
+        "productionEventIds",
+        "deviationIds",
+        "approvalIds",
+        "reportResourceIds"
+      ],
+      "additionalProperties": false,
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "partial"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "baseline",
+              "reason"
+            ]
+          }
+        }
+      ]
+    },
+    "AsBuilt": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "0.1.0-draft.1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "designSnapshot": {
+          "$ref": "#/$defs/DesignSnapshot"
+        },
+        "recordedAt": {
+          "type": "string",
+          "format": "date-time",
+          "pattern": "Z$|[+-][0-9]{2}:[0-9]{2}$"
+        },
+        "recordStatus": {
+          "type": "string",
+          "enum": [
+            "working",
+            "review",
+            "closed"
+          ]
+        },
+        "supersedesRecord": {
+          "type": "object",
+          "properties": {
+            "packageId": {
+              "type": "string",
+              "minLength": 1
+            },
+            "asBuiltResourceId": {
+              "type": "string",
+              "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+            },
+            "sha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          },
+          "required": [
+            "packageId",
+            "asBuiltResourceId",
+            "sha256"
+          ],
+          "additionalProperties": false
+        },
+        "subjects": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/PhysicalSubject"
+          },
+          "minItems": 1
+        },
+        "actors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Actor"
+          },
+          "minItems": 0
+        },
+        "productionCells": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProductionCell"
+          },
+          "minItems": 0
+        },
+        "equipment": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Equipment"
+          },
+          "minItems": 0
+        },
+        "calibrations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Calibration"
+          },
+          "minItems": 0
+        },
+        "materialLots": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MaterialLot"
+          },
+          "minItems": 0
+        },
+        "productionEvents": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ProductionEvent"
+          },
+          "minItems": 0
+        },
+        "runs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Run"
+          },
+          "minItems": 0
+        },
+        "observations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Observation"
+          },
+          "minItems": 0
+        },
+        "evaluations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Evaluation"
+          },
+          "minItems": 0
+        },
+        "scans": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Scan"
+          },
+          "minItems": 0
+        },
+        "deviations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Deviation"
+          },
+          "minItems": 0
+        },
+        "faiReports": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Fai"
+          },
+          "minItems": 0
+        },
+        "approvals": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Approval"
+          },
+          "minItems": 0
+        },
+        "extensions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/Extension"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "id",
+        "designSnapshot",
+        "recordedAt",
+        "recordStatus",
+        "subjects",
+        "actors",
+        "productionCells",
+        "equipment",
+        "calibrations",
+        "materialLots",
+        "productionEvents",
+        "runs",
+        "observations",
+        "evaluations",
+        "scans",
+        "deviations",
+        "faiReports",
+        "approvals"
+      ],
+      "additionalProperties": false
+    },
+    "View": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1
+        },
+        "productDefinitionId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "stateId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "frameId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "camera": {
+          "type": "object",
+          "properties": {
+            "position": {
+              "$ref": "#/$defs/Vector3"
+            },
+            "target": {
+              "$ref": "#/$defs/Vector3"
+            },
+            "up": {
+              "$ref": "#/$defs/Vector3"
+            },
+            "projection": {
+              "type": "string",
+              "enum": [
+                "orthographic",
+                "perspective"
+              ]
+            }
+          },
+          "required": [
+            "position",
+            "target",
+            "up",
+            "projection"
+          ],
+          "additionalProperties": false
+        },
+        "requirementIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "previewResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "productDefinitionId",
+        "stateId",
+        "frameId",
+        "camera",
+        "requirementIds"
+      ],
+      "additionalProperties": false
+    },
+    "Presentation": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "0.1.0-draft.1"
+        },
+        "designId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "views": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/View"
+          },
+          "minItems": 0
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "designId",
+        "views"
+      ],
+      "additionalProperties": false
+    },
+    "ConversionItem": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "sourceResourceId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "sourceEntityRefs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^#[1-9][0-9]*$"
+          },
+          "minItems": 1
+        },
+        "targetObjectIds": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+          },
+          "minItems": 0
+        },
+        "mappingId": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "outcome": {
+          "type": "string",
+          "enum": [
+            "translated",
+            "preserved-only",
+            "unsupported",
+            "ambiguous",
+            "conflict",
+            "omitted"
+          ]
+        },
+        "severity": {
+          "type": "string",
+          "enum": [
+            "information",
+            "warning",
+            "error"
+          ]
+        },
+        "reason": {
+          "type": "string",
+          "minLength": 1
+        }
+      },
+      "required": [
+        "id",
+        "sourceResourceId",
+        "sourceEntityRefs",
+        "targetObjectIds",
+        "mappingId",
+        "outcome",
+        "severity",
+        "reason"
+      ],
+      "additionalProperties": false
+    },
+    "ConversionReport": {
+      "type": "object",
+      "properties": {
+        "schemaVersion": {
+          "const": "0.1.0-draft.1"
+        },
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[-._][a-z0-9]+)*$"
+        },
+        "converter": {
+          "type": "object",
+          "properties": {
+            "name": {
+              "type": "string",
+              "minLength": 1
+            },
+            "version": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "required": [
+            "name",
+            "version"
+          ],
+          "additionalProperties": false
+        },
+        "sourceSchema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "sourceEdition": {
+          "type": "string",
+          "minLength": 1
+        },
+        "recommendedPracticeVersions": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          },
+          "minItems": 0
+        },
+        "items": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ConversionItem"
+          },
+          "minItems": 0
+        },
+        "unresolvedNormativeCount": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "reviewRequired": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "schemaVersion",
+        "id",
+        "converter",
+        "sourceSchema",
+        "sourceEdition",
+        "recommendedPracticeVersions",
+        "items",
+        "unresolvedNormativeCount",
+        "reviewRequired"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

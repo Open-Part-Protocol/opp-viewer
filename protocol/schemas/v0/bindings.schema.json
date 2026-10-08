@@ -1,0 +1,6 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:opp:schema:0.1.0-draft.1:bindings",
+  "title": "OPP V0 bindings (working draft)",
+  "$ref": "urn:opp:schema:0.1.0-draft.1:common#/$defs/Bindings"
+}
